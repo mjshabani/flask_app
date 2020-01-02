@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, session, render_template, abort
 
-from server.app.models import User
+from app.models.user import User
 
 api = Blueprint('api.users', __name__, url_prefix='/api/users')
 
-@api.route('/register', methods=('GET', 'POST'))
+@api.route('/register', methods=['POST'])
 def register():
     json = request.json 
     user = User(name='ali', family='alavi')
