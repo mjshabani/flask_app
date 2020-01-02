@@ -4,8 +4,14 @@ class DefaultConfig(object):
 
 
     MONGODB_SETTINGS = {
-        "db" : "flask_app"
+        "db" : "flask_app",
+        "host" : '192.168.1.35',
+        "port" : 12345,
+        "username" : 'flask_app',
+        "password" : 'psswrd_flask_app',
     }
+
+    EXTENSIONS = ['mongoengine']
 
 class DevelopmentConfig(DefaultConfig):
     pass
