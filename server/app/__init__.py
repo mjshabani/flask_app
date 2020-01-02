@@ -1,4 +1,6 @@
 from flask import Flask, current_app
+
+
 def register_controllers(flask_app):
     from app import controllers
     from importlib import import_module

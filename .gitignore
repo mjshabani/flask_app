@@ -3,3 +3,4 @@ env/
 
 .vscodey
 **/__pycache__
+**/jsonschema

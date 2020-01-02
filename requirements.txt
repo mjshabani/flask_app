@@ -1,3 +1,6 @@
 Flask
 Flask-Script
 Flask-MongoEngine
+Flask-Redis
+Flask-Json-Schema
+JSL

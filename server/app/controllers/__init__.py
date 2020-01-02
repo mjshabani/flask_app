@@ -1,1 +1,1 @@
-controllers = ['users']
+controllers = ['user']

@@ -1,3 +1,5 @@
+import os
+
 class DefaultConfig(object):
     name = 'my app'
     DEBUG = True
@@ -9,7 +11,15 @@ class DefaultConfig(object):
         "port" : 27017
     }
 
-    EXTENSIONS = ['mongoengine']
+    EXTENSIONS = ['mongoengine', 'redis', 'jsonschema']
+
+    REDIS_URL = "redis://localhost:6379"
+
+
+
+    # Directories
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    JSONSCHEMA_DIR = os.path.join(BASE_DIR, 'jsonschema')
 
 class DevelopmentConfig(DefaultConfig):
     pass
