@@ -2,4 +2,4 @@ env/
 ./env/
 
 .vscodey
-
+**/__pycache__

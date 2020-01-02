@@ -1,3 +1,10 @@
 {
-    "python.pythonPath": "env/bin/python2.7"
+    "python.pythonPath": "env/bin/python",
+    "search.exclude": {
+        "**/__pycache__": true,
+        "**/env": true
+    },
+    "files.exclude": {
+        "**/__pycache__": true
+    }
 }
