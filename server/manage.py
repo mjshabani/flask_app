@@ -15,5 +15,11 @@ def run():
 def url_map():
     print(app.url_map)
 
+
+@manager.command
+def jsonschema():
+    from app.jsons import write_schemas_to_file
+    write_schemas_to_file()
+
 if __name__ == "__main__":
     manager.run()
