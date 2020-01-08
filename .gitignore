@@ -1,6 +1,6 @@
 env/
 ./env/
 
-.vscodey
+.vscode/
 **/__pycache__
 **/jsonschema
