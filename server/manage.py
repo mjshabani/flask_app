@@ -15,6 +15,20 @@ def run():
 def url_map():
     print(app.url_map)
 
+@manager.command
+def admin():
+    from app.models.admin import Admin
+    from mongoengine import DoesNotExist
+    try:
+        admin = Admin.objects.get(username='admin')
+    except DoesNotExist:
+        admin = Admin()
+        admin.username = 'admin'
+        admin.passwrod = 'admin123456789'
+        admin.save()
+    print('admin_username : %s' % admin.username)
+    print('admin_password : %s' % admin.passwrod)
+        
 
 @manager.command
 def jsonschema():

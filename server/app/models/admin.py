@@ -1,0 +1,43 @@
+from mongoengine import *
+from flask import request, g, abort
+from app.extensions import redis
+from functools import wraps
+
+class Admin(Document):
+    username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
+    passwrod = StringField(required=True, max_length=20, min_length=8, db_field='p')
+
+    meta = {'collection': 'admins'}
+
+    def check_password(self, passwrod): #TODO
+        return passwrod == self.passwrod
+
+    @classmethod
+    def check_admin(cls):
+        secret_key = request.headers.get('Secret-Key', None)
+        if not secret_key:
+            return False
+        
+        admin_username = redis.get('ask%s' % secret_key)
+        if not admin_username:
+            return False
+
+        try:
+            g.user = cls.objects.get(username=admin_username)
+            g.user_type = 'admin'
+        except DoesNotExist:
+            print(4)
+            return False
+
+        return True
+
+    @classmethod
+    def authenticate(cls, f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            if cls.check_admin():
+                return f(*args, **kwargs)
+            else:
+                abort(401)
+        return wrapper
+

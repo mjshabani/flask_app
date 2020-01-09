@@ -5,7 +5,11 @@ from glob import glob
 from flask import request, current_app
 from app.extensions import jsonschema
 
-jsonschema_classes = ['User']
+jsonschema_classes = [
+    'AdminLogin',
+    'CreateConsultant', 'EditConsultant',
+    'User',
+]
 
 jsonschema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../jsonschema')
 

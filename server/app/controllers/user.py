@@ -8,9 +8,9 @@ api = Blueprint('api.user', __name__, url_prefix='/api/user')
 
 
 
-@api.route('/register', methods=['GET', 'POST'])
-@validate('user')
-def register():
-    from app.jsons import get_schema
+# @api.route('/register', methods=['GET', 'POST'])
+# @validate('user')
+# def register():
+#     from app.jsons import get_schema
 
-    return jsonify(get_schema('user')), 200
+#     return jsonify(get_schema('user')), 200
