@@ -25,7 +25,7 @@ def create():
 
 
 @api.route('/login', methods=['POST'])
-@validate('login_consultant')
+@validate('create_consultant')
 def login():
     json = request.json
     try:

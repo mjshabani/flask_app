@@ -6,10 +6,10 @@ from flask import request, current_app
 from app.extensions import jsonschema
 
 jsonschema_classes = [
-    'AdminLogin',
+    'LoginAdmin',
     'CreateConsultant', 'UpdateConsultant',
     'CreateConsultionTime',
-    'User',
+    'RegisterUser', 'VerifyUser', 'ChangePassword', 'LoginUser',
 ]
 
 jsonschema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../jsonschema')
@@ -22,9 +22,11 @@ def write_schemas_to_file():
         for item in dir(module):
             if item in jsonschema_classes:
                 jsl_class = getattr(module, item)
-                path = os.path.join(jsonschema_path, camel_to_underscore(item) + '.json')
+                file_name = camel_to_underscore(item)
+                path = os.path.join(jsonschema_path, file_name + '.json')
                 with open(path ,'w') as file:
                     file.write(j.dumps(jsl_class.get_schema()))
+                print("INFO!! Jsonschema file created for '%s'" % file_name)
             
 
 
@@ -36,7 +38,7 @@ def get_schema(jsonschema_name):
             jsonschema = j.loads(string)
         return jsonschema
     except:
-        return {}
+        print("WARN!! Jsonschema file not found for '%s'" % jsonschema_name)
         
 
 def validate(jsonschema_name):

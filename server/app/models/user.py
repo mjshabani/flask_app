@@ -1,20 +1,35 @@
 from mongoengine import *
 from flask import request, g
-from app.extensions import redis
 from functools import wraps
 
-class User(Document):
-    id = StringField(db_field='id')
-    
-    name = StringField(required=True, max_length=20, min_length=2, db_field='n')
-    family = StringField(required=True, max_length=20, min_length=2, db_field='f')
+from app.extensions import redis
+from .base_document import BaseDocument
+
+class User(BaseDocument):
+    name = StringField(required=True, default='', db_field='n')
+    family = StringField(required=True, default='', db_field='f')
 
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
     password = StringField(required=True, max_length=20, min_length=8, db_field='p')
     
-    phone_number = StringField(required=True, db_field='pn')
+    phone_number = StringField(required=True, unique=True, db_field='pn')
 
     meta = {'collection': 'users'}
+
+    def to_json(self):
+        return {
+            "id" : self.id,
+            "name" : self.name,
+            "family" : self.family,
+            "username" : self.username,
+            "phone_number" : self.phone_number
+        }
+    
+    def populate(self,json):
+        pass
+
+    def check_password(self, password): #TODO
+        return password == self.password
 
     @classmethod
     def check_user(cls):
@@ -22,7 +37,7 @@ class User(Document):
         if not access_token:
             return False
         
-        user_id = redis.get('uat%s' % access_token, None)
+        user_id = redis.get('uat%s' % access_token)
         if not user_id:
             return False
 
