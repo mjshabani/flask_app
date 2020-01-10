@@ -1,4 +1,5 @@
 from mongoengine import *
+from flask_mongoengine import Document
 from app.utils.uid import uid
 from app.utils.datetime import create_datetime
 

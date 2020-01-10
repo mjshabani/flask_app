@@ -1,11 +1,11 @@
 from mongoengine import *
-from enum import Enum
+from enum import IntEnum
 
-from app.utils.datetime import string_to_datetime
+from app.utils.datetime import string_to_datetime, datetime_to_string
 from .consultant import Consultant
 from .base_document import BaseDocument
 
-class Status(Enum):
+class Status(IntEnum):
     Free = 0
     Reserved = 1
     Reserving = 2
@@ -17,10 +17,18 @@ class ConsultionTime(BaseDocument):
 
     consultant = ReferenceField(Consultant, required=True, reverse_delete_rule=CASCADE, db_field='c')
     
+    meta = {'collection': 'consultion_times'}
+
     def populate(self, json):
         self.begin_time = string_to_datetime(json['begin_time']) #TODO verify begin time
         self.duration = json['duration'] # verify duration and overlapping
-        self.status = Status.Free
         self.consultant = Consultant.objects.get_or_404(id=json['consultant'])
     
-    meta = {'collection': 'consultion_times'}
+    def to_json(self):
+        return {
+            'id' : self.id,
+            'begin_time' : datetime_to_string(self.begin_time),
+            'duration' : self.duration,
+            'status' : self.status,
+            'consultant' : self.consultant.to_json()
+        }

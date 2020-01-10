@@ -1,9 +1,11 @@
-from mongoengine import *
 from flask import request, g, abort
 from app.extensions import redis
 from functools import wraps
+from mongoengine import *
 
-class Admin(Document):
+from .base_document import BaseDocument
+
+class Admin(BaseDocument):
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
     password = StringField(required=True, max_length=20, min_length=8, db_field='p')
 
