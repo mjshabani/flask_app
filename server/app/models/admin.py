@@ -5,12 +5,12 @@ from functools import wraps
 
 class Admin(Document):
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
-    passwrod = StringField(required=True, max_length=20, min_length=8, db_field='p')
+    password = StringField(required=True, max_length=20, min_length=8, db_field='p')
 
     meta = {'collection': 'admins'}
 
-    def check_password(self, passwrod): #TODO
-        return passwrod == self.passwrod
+    def check_password(self, password): #TODO
+        return password == self.password
 
     @classmethod
     def check_admin(cls):

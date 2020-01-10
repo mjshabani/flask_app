@@ -20,17 +20,17 @@ def initialize_extensions(flask_app):
 def register_error_handlers(app):
     def bad_request(e):
         if current_app.config['DEBUG']:
-            return str(e), 500
+            return str(e), 400
         else:
             return 'Bad Request' , 400
     def unauthorized(e):
         if current_app.config['DEBUG']:
-            return str(e), 500
+            return str(e), 401
         else:
             return 'Unauthorized', 401
     def not_found(e):
         if current_app.config['DEBUG']:
-            return str(e), 500
+            return str(e), 404
         else:
             return 'Not Found', 404
     def internal_error(e):
