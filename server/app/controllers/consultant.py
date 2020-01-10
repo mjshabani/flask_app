@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session, render_template, abort, current_app
+from flask import Blueprint, request, jsonify, session, render_template, abort, current_app, g
 from mongoengine import DoesNotExist
 
 from app.models.consultant import Consultant, authenticate
@@ -6,6 +6,7 @@ from app.models.admin import Admin
 from app.extensions import redis
 from app.jsons import validate
 from app.utils.uid import uid
+from app.utils.pagination import paginate
 
 api = Blueprint('api.consultant', __name__, url_prefix='/api/consultant')
 
@@ -49,3 +50,12 @@ def update(consultant_id):
     consultant.populate(json)
     consultant.save()
     return jsonify(consultant.to_json()), 200
+
+
+@api.route('', methods=['GET'])
+@paginate
+def get_list():
+    list = Consultant.objects
+    # if not g.user_type == 'admin': # TODO for deactived consultant
+    #     list = list.filter()
+    return list
