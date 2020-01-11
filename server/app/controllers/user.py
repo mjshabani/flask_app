@@ -56,7 +56,7 @@ def verify():
 @authenticate
 def change_password(user_id):
     json = request.json
-    if g.user_type == UserType.User and g.user.id != user_id:
+    if g.user_type == UserType.USER and g.user.id != user_id:
         abort(400)
     user = User.objects.get_or_404(id=user_id)
 
