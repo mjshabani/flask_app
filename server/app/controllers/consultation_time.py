@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, session, render_template, abort, 
 from mongoengine import DoesNotExist
 
 from app.models.consultant import Consultant, authenticate
-from app.models.consultion_time import ConsultionTime, Status
+from app.models.consultation_time import ConsultationTime, Status
 from app.models.admin import Admin
 from app.extensions import redis
 from app.jsons import validate
@@ -12,10 +12,10 @@ from app.utils.pagination import paginate
 from app.utils.datetime import string_to_datetime
 from app.utils.user_type import UserType
 
-api = Blueprint('api.consultion_time', __name__, url_prefix='/api/consultion_time')
+api = Blueprint('api.consultation_time', __name__, url_prefix='/api/consultation_time')
 
 @api.route('/create', methods=['POST'])
-@validate('create_consultion_time')
+@validate('create_consultation_time')
 @authenticate
 def create():
     json = request.json
@@ -25,17 +25,17 @@ def create():
     elif g.user_type == UserType.CONSULTANT:
         json['consultant'] = g.user.id
 
-    consultion_time = ConsultionTime()
-    consultion_time.populate(json)
-    consultion_time.status = int(Status.Free)
-    consultion_time.save()
-    return jsonify(consultion_time.to_json()), 200
+    consultation_time = ConsultationTime()
+    consultation_time.populate(json)
+    consultation_time.status = int(Status.FREE)
+    consultation_time.save()
+    return jsonify(consultation_time.to_json()), 200
 
 @api.route('', methods=['GET'])
 @paginate
 def get_list():
     args = request.args
-    list = ConsultionTime.objects
+    list = ConsultationTime.objects
 
     consultant_id = args.get('consultant', None)
     begin_time__lte = args.get('begin_time__lte', None)

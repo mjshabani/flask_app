@@ -1,1 +1,1 @@
-controllers = ['admin', 'consultant', 'consultion_time', 'user']
+controllers = ['admin', 'consultant', 'consultation_time', 'reservation', 'user']

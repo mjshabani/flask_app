@@ -21,3 +21,9 @@ def login():
             abort(401)
     except DoesNotExist:
         abort(401)
+
+@api.route('/logout', methods=['DELETE'])
+@Admin.authenticate
+def logout():
+    redis.delete('ask%s' % request.headers['Secret-Key'])
+    return jsonify(), 200
