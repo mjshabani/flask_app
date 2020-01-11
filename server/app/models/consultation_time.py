@@ -16,14 +16,14 @@ class ConsultationTime(BaseDocument):
     status = IntField(required=True, min_value=0, max_value=len(Status)-1, db_field='s')
 
     consultant = ReferenceField(Consultant, required=True, reverse_delete_rule=CASCADE, db_field='c')
-    
+
     meta = {'collection': 'consultation_times'}
 
     def populate(self, json):
         self.begin_time = string_to_datetime(json['begin_time']) #TODO verify begin time
         self.duration = json['duration'] # verify duration and overlapping
         self.consultant = Consultant.objects.get_or_404(id=json['consultant'])
-    
+
     def to_json(self):
         return {
             'id' : self.id,

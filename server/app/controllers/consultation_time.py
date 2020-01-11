@@ -31,6 +31,11 @@ def create():
     consultation_time.save()
     return jsonify(consultation_time.to_json()), 200
 
+@api.route('/<string:consultation_time_id>', methods=['GET'])
+def get(consultation_time_id):
+    consultation_time = ConsultationTime.objects.get_or_404(id=consultation_time_id)
+    return jsonify(consultation_time.to_json()), 200
+
 @api.route('', methods=['GET'])
 @paginate
 def get_list():
@@ -45,21 +50,30 @@ def get_list():
     if consultant_id:
         consultant = Consultant.objects.get_or_404(id=consultant_id)
         list = list.filter(consultant=consultant)
-
     if begin_time__lte:
         try:
             list = list.filter(begin_time__lte=string_to_datetime(begin_time__lte))
         except:
             abort(400, "invalid 'begin_time__lte'")
-    
     if begin_time__gte:
         try:
             list = list.filter(begin_time__gte=string_to_datetime(begin_time__gte))
         except:
             abort(400, "invalid 'begin_time__gte'")
-
     if status != None:
         list = list.filter(status=status)
 
-    
     return list
+
+@api.route('/<string:consultation_time_id>', methods=['DELETE'])
+@authenticate
+def delete(consultation_time_id):
+    consultation_time = ConsultationTime.objects.get_or_404(id=consultation_time_id)
+    if g.user_type == UserType.CONSULTANT and g.user.id != consultation_time.consultant.id:
+        abort(401, 'The consultation time is not for you!')
+
+    if consultation_time.status == Status.FREE:
+        consultation_time.delete()
+        return jsonify(), 200
+    else:
+        return abort(400, 'The consultation time is reserved.')

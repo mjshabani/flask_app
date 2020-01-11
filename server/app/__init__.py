@@ -47,9 +47,7 @@ def register_error_handlers(app):
     app.register_error_handler(JsonValidationError, bad_request)
     app.register_error_handler(DoesNotExist, not_found)
     app.register_error_handler(Exception, internal_error)
-    
 
-    
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)

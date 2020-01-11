@@ -1,5 +1,5 @@
 from mongoengine import *
-from flask import request, g
+from flask import request, g, abort
 from functools import wraps
 
 from app.extensions import redis
@@ -13,7 +13,7 @@ class User(BaseDocument):
 
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
     password = StringField(required=True, max_length=20, min_length=8, db_field='p')
-    
+
     phone_number = StringField(required=True, unique=True, db_field='pn')
 
     meta = {'collection': 'users'}
@@ -26,7 +26,7 @@ class User(BaseDocument):
             "username" : self.username,
             "phone_number" : self.phone_number
         }
-    
+
     def populate(self,json):
         self.name = json['name']
         self.family = json['family']
@@ -41,7 +41,7 @@ class User(BaseDocument):
         access_token = request.headers.get('Access-Token', None)
         if not access_token:
             return False
-        
+
         user_id = redis.get('uat%s' % access_token)
         if not user_id:
             return False
