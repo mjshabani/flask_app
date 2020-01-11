@@ -29,7 +29,6 @@ class Admin(BaseDocument):
             g.user = cls.objects.get(username=admin_username)
             g.user_type = UserType.ADMIN
         except DoesNotExist:
-            print(4)
             return False
 
         return True

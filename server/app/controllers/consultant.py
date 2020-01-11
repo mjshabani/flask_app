@@ -22,7 +22,7 @@ def create():
     consultant.username=request.json['username']
     consultant.password=request.json['password']
     consultant.save()
-    return jsonify(consultant.to_json()), 200
+    return jsonify(consultant.to_json()), 201
 
 
 @api.route('/login', methods=['POST'])
@@ -49,10 +49,23 @@ def update(consultant_id):
     json = request.json
     if g.user_type == UserType.CONSULTANT and g.user.id != consultant_id:
         abort(400)
-    consultant = Consultant.objects.get(id=consultant_id)
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
     consultant.populate(json)
     consultant.save()
     return jsonify(consultant.to_json()), 200
+
+@api.route('/<string:consultant_id>', methods=['GET'])
+def get(consultant_id):
+    json = request.json
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+    return jsonify(consultant.to_json()), 200
+
+@api.route('/<string:consultant_id>/delete', methods=['DELETE'])
+@Admin.authenticate
+def update(consultant_id):
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+    consultant.delete()
+    return jsonify(), 200
 
 
 @api.route('', methods=['GET'])

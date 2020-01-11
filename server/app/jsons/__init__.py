@@ -9,6 +9,7 @@ jsonschema_classes = [
     'LoginAdmin',
     'CreateConsultant', 'UpdateConsultant',
     'CreateConsultationTime',
+    'CreateReservation',
     'RegisterUser', 'VerifyUser', 'ChangePassword', 'LoginUser', 'UpdateUser',
     ]
 

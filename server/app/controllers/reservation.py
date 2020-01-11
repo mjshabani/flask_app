@@ -16,10 +16,10 @@ api = Blueprint('api.reservation', __name__, url_prefix='/api/reservation')
 @authenticate
 def create():
     json = request.json
-    if g.user_type = UserType.ADMIN:
+    if g.user_type == UserType.ADMIN:
         abort(400, 'This request is accessible only for normal user.')
 
     reservation = Reservation()
     reservation.populate(json)
     reservation.save()
-    return jsonify(reservation.to_json()), 200
+    return jsonify(reservation.to_json()), 201
