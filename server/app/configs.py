@@ -20,6 +20,7 @@ class DefaultConfig(object):
     JSONSCHEMA_DIR = os.path.join(BASE_DIR, 'jsonschema')
 
     SECRET_KEY_TIMEOUT = 6 * 60 * 60 # 6 hours
+    USER_TEMP_TOKEN_TIMEOUT =  5 * 60 # 5 minutes
     USER_ACCESS_TOKEN_TIMEOUT = 24 * 60 * 60 # 24 hours
     CONSULTANT_ACCESS_TOKEN_TIMEOUT = 12 * 60 * 60 # 12 hours
 

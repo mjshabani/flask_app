@@ -8,7 +8,7 @@ from mongoengine import DoesNotExist
 api = Blueprint('api.admin', __name__, url_prefix='/api/admin')
 
 @api.route('/login', methods=['POST'])
-@validate('admin_login')
+@validate('login_admin')
 def login():
     json = request.json
     try:

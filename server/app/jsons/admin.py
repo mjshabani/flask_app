@@ -1,6 +1,6 @@
 from jsl import Document, StringField
 
 
-class AdminLogin(Document):
+class LoginAdmin(Document):
     username = StringField(required=True)
     password = StringField(required=True)

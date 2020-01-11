@@ -2,10 +2,12 @@ from flask import abort, request, g
 from mongoengine import *
 from functools import wraps
 
-from app.utils.uid import uid
 from app.extensions import redis
 from .base_document import BaseDocument
 from .admin import Admin
+from app.utils.uid import uid
+from app.utils.user_type import UserType
+
 
 class Consultant(BaseDocument):
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
@@ -59,7 +61,7 @@ class Consultant(BaseDocument):
 
         try:
             g.user = cls.objects.get(id=consultant_id)
-            g.user_type = 'consultant'
+            g.user_type = UserType.CONSULTANT
         except DoesNotExist:
             return False
 
