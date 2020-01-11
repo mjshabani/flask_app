@@ -28,8 +28,6 @@ def write_schemas_to_file():
                 with open(path ,'w') as file:
                     file.write(j.dumps(jsl_class.get_schema()))
                 print("INFO!! Jsonschema file created for '%s'" % file_name)
-            
-
 
 def get_schema(jsonschema_name):
     try:
@@ -40,7 +38,6 @@ def get_schema(jsonschema_name):
         return jsonschema
     except:
         print("WARN!! Jsonschema file not found for '%s'" % jsonschema_name)
-        
 
 def validate(jsonschema_name):
     return jsonschema.validate(get_schema(jsonschema_name))

@@ -5,7 +5,7 @@ from app.utils.datetime import create_datetime
 
 class BaseDocument(Document):
     id = StringField(primary_key=True, db_field='id')
-    create_time = DateTimeField(db_field='ct')
+    create_time = DateTimeField(db_field='create_time')
 
     meta = {'abstract': True,}
 

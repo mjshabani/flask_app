@@ -11,9 +11,6 @@ from app.utils.user_type import UserType
 
 api = Blueprint('api.consultant', __name__, url_prefix='/api/consultant')
 
-
-
-
 @api.route('/create', methods=['POST'])
 @validate('create_consultant')
 @Admin.authenticate
@@ -24,6 +21,37 @@ def create():
     consultant.save()
     return jsonify(consultant.to_json()), 201
 
+@api.route('/<string:consultant_id>/update', methods=['PUT'])
+@validate('update_consultant')
+@authenticate
+def update(consultant_id):
+    json = request.json
+    if g.user_type == UserType.CONSULTANT and g.user.id != consultant_id:
+        abort(400)
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+    consultant.populate(json)
+    consultant.save()
+    return jsonify(consultant.to_json()), 200
+
+@api.route('/<string:consultant_id>', methods=['GET'])
+def get(consultant_id):
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+    return jsonify(consultant.to_json()), 200
+
+@api.route('', methods=['GET'])
+@paginate
+def get_list():
+    list = Consultant.objects
+    # if not g.user_type == UserType.ADMIN: # TODO for deactived consultant
+    #     list = list.filter()
+    return list
+
+@api.route('/<string:consultant_id>', methods=['DELETE'])
+@Admin.authenticate
+def delete(consultant_id):
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+    consultant.delete()
+    return jsonify(), 200
 
 @api.route('/login', methods=['POST'])
 @validate('create_consultant')
@@ -42,36 +70,10 @@ def login():
     except DoesNotExist:
         abort(401)
 
-@api.route('/<string:consultant_id>/update', methods=['PUT'])
-@validate('update_consultant')
+@api.route('/logout', methods=['DELETE'])
 @authenticate
-def update(consultant_id):
-    json = request.json
-    if g.user_type == UserType.CONSULTANT and g.user.id != consultant_id:
-        abort(400)
-    consultant = Consultant.objects.get_or_404(id=consultant_id)
-    consultant.populate(json)
-    consultant.save()
-    return jsonify(consultant.to_json()), 200
-
-@api.route('/<string:consultant_id>', methods=['GET'])
-def get(consultant_id):
-    json = request.json
-    consultant = Consultant.objects.get_or_404(id=consultant_id)
-    return jsonify(consultant.to_json()), 200
-
-@api.route('/<string:consultant_id>/delete', methods=['DELETE'])
-@Admin.authenticate
-def update(consultant_id):
-    consultant = Consultant.objects.get_or_404(id=consultant_id)
-    consultant.delete()
+def logout():
+    if g.user_type == UserType.ADMIN:
+        abort(400, 'You are admin and you cannot logout for consultant!')
+    redis.delete('cat%s' % request.headers['Access-Token'])
     return jsonify(), 200
-
-
-@api.route('', methods=['GET'])
-@paginate
-def get_list():
-    list = Consultant.objects
-    # if not g.user_type == UserType.ADMIN: # TODO for deactived consultant
-    #     list = list.filter()
-    return list

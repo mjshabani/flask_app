@@ -37,7 +37,7 @@ def register():
 @validate('verify_user')
 def verify():
     json = request.json
-    
+
     user_id = redis.get('utt%s%s' %(json['long_code'], json['short_code']))
 
     if not user_id:
@@ -61,7 +61,19 @@ def change_password(user_id):
     user = User.objects.get_or_404(id=user_id)
 
     user.password = json['password']
-    user.save()    
+    user.save()
+    return jsonify(user.to_json()), 200
+
+@api.route('/<string:user_id>/update', methods=['PUT'])
+@validate('update_user')
+@authenticate
+def update(user_id):
+    json = request.json
+    if g.user_type == UserType.USER and g.user.id != user_id:
+        abort(400)
+    user = User.objects.get_or_404(id=user_id)
+    user.populate(json)
+    user.save()
     return jsonify(user.to_json()), 200
 
 @api.route('/login', methods=['POST'])
@@ -81,14 +93,10 @@ def login():
     except DoesNotExist:
         abort(401)
 
-@api.route('/<string:user_id>/update', methods=['PUT'])
-@validate('update_user')
+@api.route('/logout', methods=['DELETE'])
 @authenticate
-def update(user_id):
-    json = request.json
-    if g.user_type == UserType.USER and g.user.id != user_id:
-        abort(400)
-    user = User.objects.get_or_404(id=user_id)
-    user.populate(json)
-    user.save()
-    return jsonify(user.to_json()), 200
+def logout():
+    if g.user_type == UserType.ADMIN:
+        abort(400, 'You are admin and you cannot logout for user!')
+    redis.delete('cat%s' % request.headers['Access-Token'])
+    return jsonify(), 200

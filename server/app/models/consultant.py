@@ -16,7 +16,7 @@ class Consultant(BaseDocument):
     title = StringField(required=True, default='', db_field='t')
     name = StringField(required=True, default='', db_field='n')
     family = StringField(required=True, default='', db_field='f')
-    
+
     summary_info = StringField(required=True, default='', db_field='si')
     further_info = StringField(required=True, default='', db_field='fi')
 
@@ -48,13 +48,13 @@ class Consultant(BaseDocument):
 
     def check_password(self, password): #TODO
         return password == self.password
-        
+
     @classmethod
     def check_user(cls):
         access_token = request.headers.get('Access-Token', None)
         if not access_token:
             return False
-        
+
         consultant_id = redis.get('cat%s' % access_token)
         if not consultant_id:
             return False
@@ -66,7 +66,6 @@ class Consultant(BaseDocument):
             return False
 
         return True
-
 
 def authenticate(f):
     @wraps(f)

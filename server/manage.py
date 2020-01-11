@@ -28,7 +28,7 @@ def admin():
         admin.save()
     print('admin_username : %s' % admin.username)
     print('admin_password : %s' % admin.password)
-        
+
 
 @manager.command
 def jsonschema():

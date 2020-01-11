@@ -20,7 +20,7 @@ class Admin(BaseDocument):
         secret_key = request.headers.get('Secret-Key', None)
         if not secret_key:
             return False
-        
+
         admin_username = redis.get('ask%s' % secret_key)
         if not admin_username:
             return False

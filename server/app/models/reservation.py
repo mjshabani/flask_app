@@ -8,7 +8,7 @@ from .consultation_time import ConsultationTime, Status
 class Reservation(BaseDocument):
     user = ReferenceField(User, required=True, reverse_delete_rule=CASCADE, db_field='u')
     consultation_time = ReferenceField(ConsultationTime, required=True, reverse_delete_rule=CASCADE, db_field='ct')
-    
+
     meta = {'collection': 'reservations'}
 
     def to_json(self):
@@ -35,5 +35,8 @@ class Reservation(BaseDocument):
             self.consultation_time = consultation_time
             self.save()
 
+    def delete(self, *args, **kwargs):
+        self.consultation_time.status = Status.FREE
+        self.consultation_time.save()
+        super(Reservation, self).delete(*args, **kwargs)
 
-    
