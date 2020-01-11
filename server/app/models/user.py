@@ -4,6 +4,8 @@ from functools import wraps
 
 from app.extensions import redis
 from .base_document import BaseDocument
+from .admin import Admin
+from app.utils.user_type import UserType
 
 class User(BaseDocument):
     name = StringField(required=True, default='', db_field='n')
@@ -26,7 +28,10 @@ class User(BaseDocument):
         }
     
     def populate(self,json):
-        pass
+        self.name = json['name']
+        self.family = json['family']
+        if 'username' in json:
+            self.username = json['username']
 
     def check_password(self, password): #TODO
         return password == self.password
@@ -43,7 +48,7 @@ class User(BaseDocument):
 
         try:
             g.user = cls.objects.get(id = user_id)
-            g.user_type = 'user'
+            g.user_type = UserType.USER
         except DoesNotExist:
             return False
 
@@ -52,7 +57,7 @@ class User(BaseDocument):
 def authenticate(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if User.check_user():
+        if Admin.check_admin() or User.check_user():
             return f(*args, **kwargs)
         else:
             abort(401)

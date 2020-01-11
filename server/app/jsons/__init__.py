@@ -9,8 +9,8 @@ jsonschema_classes = [
     'LoginAdmin',
     'CreateConsultant', 'UpdateConsultant',
     'CreateConsultionTime',
-    'RegisterUser', 'VerifyUser', 'ChangePassword', 'LoginUser',
-]
+    'RegisterUser', 'VerifyUser', 'ChangePassword', 'LoginUser', 'UpdateUser',
+    ]
 
 jsonschema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../jsonschema')
 

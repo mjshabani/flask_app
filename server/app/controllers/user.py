@@ -6,6 +6,7 @@ from app.models.user import User, authenticate
 from app.extensions import redis
 from app.jsons import validate
 from app.utils.uid import uid
+from app.utils.user_type import UserType
 
 api = Blueprint('api.user', __name__, url_prefix='/api/user')
 
@@ -50,15 +51,18 @@ def verify():
 
     return jsonify(result), 200
 
-@api.route('/change_password', methods=['PUT'])
+@api.route('/<string:user_id>/change_password', methods=['PUT'])
 @validate('change_password')
 @authenticate
-def change_password():
+def change_password(user_id):
     json = request.json
-    g.user.password = json['password']
+    if g.user_type == UserType.User and g.user.id != user_id:
+        abort(400)
+    user = User.objects.get_or_404(id=user_id)
 
-    g.user.save()    
-    return jsonify(g.user.to_json()), 200
+    user.password = json['password']
+    user.save()    
+    return jsonify(user.to_json()), 200
 
 @api.route('/login', methods=['POST'])
 @validate('login_user')
@@ -76,3 +80,15 @@ def login():
             abort(401)
     except DoesNotExist:
         abort(401)
+
+@api.route('/<string:user_id>/update', methods=['PUT'])
+@validate('update_user')
+@authenticate
+def update(user_id):
+    json = request.json
+    if g.user_type == UserType.USER and g.user.id != user_id:
+        abort(400)
+    user = User.objects.get_or_404(id=user_id)
+    user.populate(json)
+    user.save()
+    return jsonify(user.to_json()), 200

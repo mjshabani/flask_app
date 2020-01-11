@@ -4,6 +4,7 @@ from functools import wraps
 from mongoengine import *
 
 from .base_document import BaseDocument
+from app.utils.user_type import UserType
 
 class Admin(BaseDocument):
     username = StringField(required=True, unique=True, max_length=20, min_length=5, db_field='u')
@@ -26,7 +27,7 @@ class Admin(BaseDocument):
 
         try:
             g.user = cls.objects.get(username=admin_username)
-            g.user_type = 'admin'
+            g.user_type = UserType.ADMIN
         except DoesNotExist:
             print(4)
             return False

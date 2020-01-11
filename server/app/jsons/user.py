@@ -16,3 +16,8 @@ class ChangePassword(Document):
 class LoginUser(Document):
     username = StringField(required=True, max_length=20, min_length=5)
     password = StringField(required=True, max_length=20, min_length=8)
+
+class UpdateUser(Document):
+    name = StringField(required=True)
+    family = StringField(required=True)
+    username = StringField(max_length=20, min_length=5)

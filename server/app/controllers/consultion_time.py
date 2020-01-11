@@ -10,6 +10,7 @@ from app.jsons import validate
 from app.utils.uid import uid
 from app.utils.pagination import paginate
 from app.utils.datetime import string_to_datetime
+from app.utils.user_type import UserType
 
 api = Blueprint('api.consultion_time', __name__, url_prefix='/api/consultion_time')
 
@@ -18,10 +19,10 @@ api = Blueprint('api.consultion_time', __name__, url_prefix='/api/consultion_tim
 @authenticate
 def create():
     json = request.json
-    if g.user_type == 'admin':
+    if g.user_type == UserType.ADMIN:
         if not 'consultant' in json:
             abort(400, "'consultant' field is required in request body")
-    elif g.user_type == 'consultant':
+    elif g.user_type == UserType.CONSULTANT:
         json['consultant'] = g.user.id
 
     consultion_time = ConsultionTime()

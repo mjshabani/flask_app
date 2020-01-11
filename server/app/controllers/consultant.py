@@ -7,6 +7,7 @@ from app.extensions import redis
 from app.jsons import validate
 from app.utils.uid import uid
 from app.utils.pagination import paginate
+from app.utils.user_type import UserType
 
 api = Blueprint('api.consultant', __name__, url_prefix='/api/consultant')
 
@@ -46,6 +47,8 @@ def login():
 @authenticate
 def update(consultant_id):
     json = request.json
+    if g.user_type == UserType.CONSULTANT and g.user.id != consultant_id:
+        abort(400)
     consultant = Consultant.objects.get(id=consultant_id)
     consultant.populate(json)
     consultant.save()
@@ -56,6 +59,6 @@ def update(consultant_id):
 @paginate
 def get_list():
     list = Consultant.objects
-    # if not g.user_type == 'admin': # TODO for deactived consultant
+    # if not g.user_type == UserType.ADMIN: # TODO for deactived consultant
     #     list = list.filter()
     return list
