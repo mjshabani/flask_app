@@ -6,10 +6,1182 @@
 	},
 	"item": [
 		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4c9cc671-c78e-4fcc-ba7c-adaa7f0d6333",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"admin_secret_key\", jsonData.secret_key);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"admin\",\n\t\"password\" : \"admin123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4c9cc671-c78e-4fcc-ba7c-adaa7f0d6333",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Secret-Key",
+								"value": "{{admin_secret_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Consultant",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									"var chars = 'abcdefghijklmnopqrstuvwxyz';",
+									"var nums = '0123456789'",
+									"function random(length, list) {",
+									"   var result  = '';",
+									"   for ( var i = 0; i < length; i++ ) {",
+									"      result += list.charAt(Math.floor(Math.random() * list.length));",
+									"   }",
+									"   return result;",
+									"}",
+									"",
+									"var random_str = random(5,chars)",
+									"",
+									"pm.environment.set(\"consultant_username\", \"cons_\" + random_str);",
+									"pm.environment.set(\"consultant_password\", \"cons_pwd_\" + random_str);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5f33e4c0-1c03-4711-9542-48ee9c20fa29",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"consultant_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Secret-Key",
+								"value": "{{admin_secret_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"{{consultant_username}}\",\n\t\"password\" : \"{{consultant_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"value": "{{consultant_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\" : \"Dr\",\n    \"name\" : \"Ali\",\n    \"family\" : \"Alavi\",\n    \"summary_info\" : \"consultant summary_info\",\n    \"further_info\" : \"consultant further_info\",\n    \"address\" : \"Azadi St, Tehran, Iran\",\n    \"phone_number\" : \"021-66666666\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/{{consultant_id}}/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"{{consultant_id}}",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/{{consultant_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"{{consultant_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"consultant_id\", jsonData.list[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Secret-Key",
+								"value": "{{admin_secret_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/{{consultant_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"{{consultant_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"consultant_access_token\", jsonData.access_token);",
+									"pm.environment.set(\"consultant_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"{{consultant_username}}\",\n\t\"password\" : \"{{consultant_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"value": "{{consultant_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultant/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultant",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Consultation Time",
+			"item": [
+				{
+					"name": "create (consultant)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8cda3401-9908-4b4d-8bad-1b77cb5da9dc",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"consultation_time_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"type": "text",
+								"value": "{{consultant_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"begin_time\" : \"2020-2-20T10:00:00\",\n\t\"duration\" : 30\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (admin)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a69b4f7-fd39-4fed-9fa6-1ac449756bcb",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"consultation_time_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Secret-Key",
+								"type": "text",
+								"value": "{{admin_secret_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"begin_time\" : \"2020-1-20T10:00:00\",\n\t\"duration\" : 30,\n\t\"consultant\" : \"{{consultant_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a69b4f7-fd39-4fed-9fa6-1ac449756bcb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time/{{consultation_time_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time",
+								"{{consultation_time_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (consultant)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a69b4f7-fd39-4fed-9fa6-1ac449756bcb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"value": "{{consultant_access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time/{{consultation_time_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time",
+								"{{consultation_time_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (admin)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a69b4f7-fd39-4fed-9fa6-1ac449756bcb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Secret-Key",
+								"type": "text",
+								"value": "{{admin_secret_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time/{{consultation_time_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time",
+								"{{consultation_time_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get list (with filter)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time?consultant={{consultant_id}}&status=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time"
+							],
+							"query": [
+								{
+									"key": "consultant",
+									"value": "{{consultant_id}}"
+								},
+								{
+									"key": "status",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/consultation_time",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"consultation_time"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reservation",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8cda3401-9908-4b4d-8bad-1b77cb5da9dc",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"reservation_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"type": "text",
+								"value": "{{user_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"consultation_time\" : \"{{consultation_time_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservation/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservation",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8cda3401-9908-4b4d-8bad-1b77cb5da9dc",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"type": "text",
+								"value": "{{user_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservation/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservation",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8cda3401-9908-4b4d-8bad-1b77cb5da9dc",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"type": "text",
+								"value": "{{user_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservation/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservation",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "User",
 			"item": [
 				{
-					"name": "register user",
+					"name": "register",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -76,64 +1248,6 @@
 							"path": [
 								"user",
 								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "login user",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "6e41811d-e493-49c0-ac21-daddc6febf3e",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "62926585-f5c4-4bc5-8cae-664d7bbaec14",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.environment.set(\"user_access_token\", jsonData.access_token);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"{{user_username}}\",\n\t\"password\" : \"{{user_password}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/user/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"user",
-								"login"
 							]
 						}
 					},
@@ -268,12 +1382,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/change_password",
+							"raw": "{{base_url}}/user/{{user_id}}/change_password",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
+								"{{user_id}}",
 								"change_password"
 							]
 						}
@@ -281,26 +1396,76 @@
 					"response": []
 				},
 				{
-					"name": "change password Copy",
+					"name": "update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Access-Token",
+								"type": "text",
+								"value": "{{user_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"{{user_username}}\",\n    \"name\" : \"Ali\",\n    \"family\" : \"Alavi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/{{user_id}}/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"{{user_id}}",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"id": "6e41811d-e493-49c0-ac21-daddc6febf3e",
 								"exec": [
-									"var chars = 'abcdefghijklmnopqrstuvwxyz';",
-									"var nums = '0123456789'",
-									"function random(length, list) {",
-									"   var result  = '';",
-									"   for ( var i = 0; i < length; i++ ) {",
-									"      result += list.charAt(Math.floor(Math.random() * list.length));",
-									"   }",
-									"   return result;",
-									"}",
-									"",
-									"var random_str = random(10,chars)",
-									"",
-									"pm.environment.set(\"user_password\", random_str);"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -311,30 +1476,26 @@
 								"id": "62926585-f5c4-4bc5-8cae-664d7bbaec14",
 								"exec": [
 									"var jsonData = pm.response.json();",
-									""
+									"",
+									"pm.environment.set(\"user_access_token\", jsonData.access_token);"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "Access-Token",
-								"value": "{{user_access_token}}",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"password\" : \"{{user_password}}\"\n}",
+							"raw": "{\n\t\"username\" : \"{{user_username}}\",\n\t\"password\" : \"{{user_password}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -342,196 +1503,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/change_password",
+							"raw": "{{base_url}}/user/login",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"change_password"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Admin",
-			"item": [
-				{
-					"name": "login admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "4c9cc671-c78e-4fcc-ba7c-adaa7f0d6333",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.environment.set(\"admin_secret_key\", jsonData.secret_key);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"admin\",\n\t\"password\" : \"admin123456789\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/admin/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"login"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Consultant",
-			"item": [
-				{
-					"name": "create consultant",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									"var chars = 'abcdefghijklmnopqrstuvwxyz';",
-									"var nums = '0123456789'",
-									"function random(length, list) {",
-									"   var result  = '';",
-									"   for ( var i = 0; i < length; i++ ) {",
-									"      result += list.charAt(Math.floor(Math.random() * list.length));",
-									"   }",
-									"   return result;",
-									"}",
-									"",
-									"var random_str = random(5,chars)",
-									"",
-									"pm.environment.set(\"consultant_username\", \"cons_\" + random_str);",
-									"pm.environment.set(\"consultant_password\", \"cons_pwd_\" + random_str);",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Secret-Key",
-								"value": "{{admin_secret_key}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"{{consultant_username}}\",\n\t\"password\" : \"{{consultant_password}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultant/create",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultant",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "login consultant",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.environment.set(\"consultant_access_token\", jsonData.access_token);",
-									"pm.environment.set(\"consultant_id\", jsonData.id);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"{{consultant_username}}\",\n\t\"password\" : \"{{consultant_password}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultant/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultant",
 								"login"
 							]
 						}
@@ -539,7 +1516,7 @@
 					"response": []
 				},
 				{
-					"name": "update consultant",
+					"name": "logout",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -563,145 +1540,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Access-Token",
-								"value": "{{consultant_access_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"title\" : \"Dr\",\n    \"name\" : \"Ali\",\n    \"family\" : \"Alavi\",\n    \"summary_info\" : \"consultant summary_info\",\n    \"further_info\" : \"consultant further_info\",\n    \"address\" : \"Azadi St, Tehran, Iran\",\n    \"phone_number\" : \"021-66666666\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultant/{{consultant_id}}/update",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultant",
-								"{{consultant_id}}",
-								"update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get consultants list",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "ad9cd509-2d24-4dd6-b865-e28ce0a4cf8c",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"title\" : \"Dr\",\n    \"name\" : \"Ali\",\n    \"family\" : \"Alavi\",\n    \"summary_info\" : \"consultant summary_info\",\n    \"further_info\" : \"consultant further_info\",\n    \"address\" : \"Azadi St, Tehran, Iran\",\n    \"phone_number\" : \"021-66666666\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultant?page=1&per_page=10",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultant"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "per_page",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Consultion Time",
-			"item": [
-				{
-					"name": "create consultion time (consultant)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "8cda3401-9908-4b4d-8bad-1b77cb5da9dc",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.environment.set(\"consultion_time_id\", jsonData.id);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -712,119 +1551,7 @@
 							{
 								"key": "Access-Token",
 								"type": "text",
-								"value": "{{consultant_access_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"begin_time\" : \"2020-2-20T10:00:00\",\n\t\"duration\" : 30\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultion_time/create",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultion_time",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "create consultion time (admin)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "0a69b4f7-fd39-4fed-9fa6-1ac449756bcb",
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"",
-									"pm.environment.set(\"consultion_time_id\", jsonData.id);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Secret-Key",
-								"type": "text",
-								"value": "{{admin_secret_key}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"begin_time\" : \"2020-1-20T10:00:00\",\n\t\"duration\" : 30,\n\t\"consultant\" : \"{{consultant_id}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultion_time/create",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultion_time",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get consultion time list (with filter)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "{{user_access_token}}"
 							}
 						],
 						"body": {
@@ -837,70 +1564,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/consultion_time?consultant={{consultant_id}}&status=0",
+							"raw": "{{base_url}}/user/logout",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"consultion_time"
-							],
-							"query": [
-								{
-									"key": "consultant",
-									"value": "{{consultant_id}}"
-								},
-								{
-									"key": "status",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get consultion time list",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/consultion_time",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"consultion_time"
+								"user",
+								"logout"
 							]
 						}
 					},
