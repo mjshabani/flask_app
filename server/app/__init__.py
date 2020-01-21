@@ -1,4 +1,5 @@
 from flask import Flask, current_app
+from flask_cors import CORS
 from flask_json_schema import JsonValidationError
 from mongoengine import DoesNotExist
 
@@ -50,6 +51,7 @@ def register_error_handlers(app):
 
 def create_app(config):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config)
     register_controllers(app)
     initialize_extensions(app)

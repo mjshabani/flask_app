@@ -3,4 +3,5 @@ Flask-Script
 Flask-MongoEngine
 Flask-Redis
 Flask-Json-Schema
+Flask-CORS
 JSL
