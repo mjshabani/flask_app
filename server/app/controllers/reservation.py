@@ -13,7 +13,7 @@ from app.utils.user_type import UserType
 api = Blueprint('api.reservation', __name__, url_prefix='/api/reservation')
 
 
-@api.route('/create', methods=['POST'])
+@api.route('', methods=['POST'])
 @validate('create_reservation')
 @authenticate
 def create():
