@@ -7,7 +7,7 @@ from app.extensions import jsonschema
 
 jsonschema_classes = [
     'LoginAdmin',
-    'CreateConsultant', 'UpdateConsultant',
+    'ConsultantCreate', 'UpdateConsultant',
     'CreateConsultationTime',
     'CreateReservation',
     'RegisterUser', 'VerifyUser', 'ChangePassword', 'LoginUser', 'UpdateUser',

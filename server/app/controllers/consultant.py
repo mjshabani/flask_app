@@ -11,7 +11,7 @@ from app.utils.user_type import UserType
 
 api = Blueprint('api.consultant', __name__, url_prefix='/api/consultant')
 
-@api.route('/create', methods=['POST'])
+@api.route('', methods=['POST'])
 @validate('create_consultant')
 @Admin.authenticate
 def create():
@@ -21,7 +21,7 @@ def create():
     consultant.save()
     return jsonify(consultant.to_json()), 201
 
-@api.route('/<string:consultant_id>/update', methods=['PUT'])
+@api.route('/<string:consultant_id>', methods=['PUT'])
 @validate('update_consultant')
 @authenticate
 def update(consultant_id):
@@ -33,9 +33,9 @@ def update(consultant_id):
     consultant.save()
     return jsonify(consultant.to_json()), 200
 
-@api.route('/<string:consultant_id>', methods=['GET'])
-def get(consultant_id):
-    consultant = Consultant.objects.get_or_404(id=consultant_id)
+@api.route('/<string:consultant_username>', methods=['GET'])
+def get(consultant_username):
+    consultant = Consultant.objects.get_or_404(username=consultant_username)
     return jsonify(consultant.to_json()), 200
 
 @api.route('', methods=['GET'])
@@ -77,3 +77,17 @@ def logout():
         abort(400, 'You are admin and you cannot logout for consultant!')
     redis.delete('cat%s' % request.headers['Access-Token'])
     return jsonify(), 200
+
+@api.route('/<string:consultant_id>/change_password', methods=['PUT'])
+@validate('change_password')
+@authenticate
+def change_password(consultant_id):
+    print(g.user)
+    json = request.json
+    if g.user_type == UserType.CONSULTANT and g.user.id != consultant_id:
+        abort(400)
+    consultant = Consultant.objects.get_or_404(id=consultant_id)
+
+    consultant.password = json['password']
+    consultant.save()
+    return jsonify(consultant.to_json()), 200

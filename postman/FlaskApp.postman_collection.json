@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "21549770-4902-4a60-a02e-ca43fc59464f",
+		"_postman_id": "54850c66-9511-4d81-9b7e-4b6d66a034cc",
 		"name": "FlaskApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -198,6 +198,20 @@
 							"script": {
 								"id": "1d481782-2657-4a2b-956d-91a9c15bdfd4",
 								"exec": [
+									"var chars = 'ابپتثجحخدذرزژسشصضطظعغفقلمنوهی';",
+									"var nums = '0123456789'",
+									"function random(length, list) {",
+									"   var result  = '';",
+									"   for ( var i = 0; i < length; i++ ) {",
+									"      result += list.charAt(Math.floor(Math.random() * list.length));",
+									"   }",
+									"   return result;",
+									"}",
+									"",
+									"var random_str = random(3,chars)",
+									"",
+									"pm.environment.set(\"consultant_name\", random_str + \"م\");",
+									"pm.environment.set(\"consultant_family\", random_str + \"می\");",
 									""
 								],
 								"type": "text/javascript"
@@ -231,7 +245,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\" : \"Dr\",\n    \"name\" : \"Ali\",\n    \"family\" : \"Alavi\",\n    \"summary_info\" : \"consultant summary_info\",\n    \"further_info\" : \"consultant further_info\",\n    \"address\" : \"Azadi St, Tehran, Iran\",\n    \"phone_number\" : \"021-66666666\"\n}",
+							"raw": "{\n\t\"title\" : \"دکتر\",\n    \"name\" : \"{{consultant_name}}\",\n    \"family\" : \"{{consultant_family}}\",\n    \"summary_info\" : \"دکترای روانشانسی بالینی\",\n    \"further_info\" : \"اطلاعات تکمیلی دکتر روانشناسی بالینی از دانشگاه تورقوز آباد سفلی واحد تحقیقات\",\n    \"address\" : \"اتوبان قدیر، بلوار آزادی، خیابان تهران، کوچه ایران کد پستی: 1324548794\",\n    \"phone_number\" : \"021-66666666\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -239,14 +253,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/consultant/{{consultant_id}}/update",
+							"raw": "{{base_url}}/consultant/{{consultant_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"consultant",
-								"{{consultant_id}}",
-								"update"
+								"{{consultant_id}}"
 							]
 						}
 					},
@@ -610,7 +623,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"begin_time\" : \"2020-2-20T10:00:00\",\n\t\"duration\" : 30\n}",
+							"raw": "{\n\t\"begin_time\" : \"2020-3-1T10:00:00\",\n\t\"duration\" : 30\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1037,13 +1050,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/reservation/create",
+							"raw": "{{base_url}}/reservation",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"reservation",
-								"create"
+								"reservation"
 							]
 						}
 					},
@@ -1444,14 +1456,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/{{user_id}}/update",
+							"raw": "{{base_url}}/user/{{user_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"{{user_id}}",
-								"update"
+								"{{user_id}}"
 							]
 						}
 					},
@@ -1571,6 +1582,89 @@
 							"path": [
 								"user",
 								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "upload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6e41811d-e493-49c0-ac21-daddc6febf3e",
+								"exec": [
+									"var chars = 'abcdefghijklmnopqrstuvwxyz';",
+									"var nums = '0123456789'",
+									"function random(length, list) {",
+									"   var result  = '';",
+									"   for ( var i = 0; i < length; i++ ) {",
+									"      result += list.charAt(Math.floor(Math.random() * list.length));",
+									"   }",
+									"   return result;",
+									"}",
+									"",
+									"var random_str = random(7,chars)",
+									"var random_phone = '09' + random(9,nums)",
+									"",
+									"pm.environment.set(\"user_phone_number\", random_phone);",
+									"pm.environment.set(\"user_username\", random_str);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "62926585-f5c4-4bc5-8cae-664d7bbaec14",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"user_long_code\", jsonData.long_code);",
+									"pm.environment.set(\"user_short_code\", \"12321\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/mjavad/Pictures/Screenshot from 2020-01-28 12-18-02.png"
+								},
+								{
+									"key": "asdfa",
+									"value": "adsfadsf",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"upload"
 							]
 						}
 					},

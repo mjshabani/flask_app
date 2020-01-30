@@ -1,11 +1,14 @@
 from flask import Blueprint, request, jsonify, session, render_template, abort, current_app, g
 from random import randint
 from mongoengine import DoesNotExist
+from app.models.admin import Admin
 
 from app.models.user import User, authenticate
 from app.extensions import redis
 from app.jsons import validate
 from app.utils.uid import uid
+from app.utils.pagination import paginate
+
 from app.utils.user_type import UserType
 
 api = Blueprint('api.user', __name__, url_prefix='/api/user')
@@ -64,7 +67,7 @@ def change_password(user_id):
     user.save()
     return jsonify(user.to_json()), 200
 
-@api.route('/<string:user_id>/update', methods=['PUT'])
+@api.route('/<string:user_id>', methods=['PUT'])
 @validate('update_user')
 @authenticate
 def update(user_id):
@@ -100,3 +103,27 @@ def logout():
         abort(400, 'You are admin and you cannot logout for user!')
     redis.delete('cat%s' % request.headers['Access-Token'])
     return jsonify(), 200
+
+@api.route('', methods=['GET'])
+@Admin.authenticate
+@paginate
+def get_list():
+    list = User.objects
+    # if not g.user_type == UserType.ADMIN: # TODO for deactived consultant
+    #     list = list.filter()
+    return list
+
+@api.route('/<string:user_id>', methods=['DELETE'])
+@Admin.authenticate
+def delete(user_id):
+    user = User.objects.get_or_404(id=user_id)
+    user.delete()
+    return jsonify(), 200
+
+@api.route('/<string:user_id>', methods=['GET'])
+@authenticate
+def get(user_id):
+    if g.user_type == UserType.USER and g.user.id != user_id:
+        abort(400)
+    user = User.objects.get_or_404(id=user_id)
+    return jsonify(user.to_json()), 200

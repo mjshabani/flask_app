@@ -21,3 +21,4 @@ class UpdateUser(Document):
     name = StringField(required=True)
     family = StringField(required=True)
     username = StringField(max_length=20, min_length=5)
+    image = StringField(required=True)

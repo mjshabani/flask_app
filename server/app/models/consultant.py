@@ -22,6 +22,7 @@ class Consultant(BaseDocument):
 
     address = StringField(required=True, default='', db_field='a')
     phone_number = StringField(required=True, default='', db_field='pn')
+    image = StringField(required=True, default='', db_field='i')
 
     meta = {'collection': 'consultants'}
 
@@ -33,10 +34,12 @@ class Consultant(BaseDocument):
         self.further_info = json["further_info"]
         self.address = json["address"]
         self.phone_number = json["phone_number"]
+        self.image = json["image"]
 
     def to_json(self):
         return {
             "id" : self.id,
+            "username" : self.username,
             "title" : self.title,
             "name" : self.name,
             "family" : self.family,
@@ -44,6 +47,7 @@ class Consultant(BaseDocument):
             "further_info" : self.further_info,
             "address" : self.address,
             "phone_number" : self.phone_number,
+            "image" : self.image
         }
 
     def check_password(self, password): #TODO
@@ -52,6 +56,8 @@ class Consultant(BaseDocument):
     @classmethod
     def check_user(cls):
         access_token = request.headers.get('Access-Token', None)
+        print(access_token)
+
         if not access_token:
             return False
 

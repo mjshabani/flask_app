@@ -15,6 +15,7 @@ class User(BaseDocument):
     password = StringField(required=True, max_length=20, min_length=8, db_field='p')
 
     phone_number = StringField(required=True, unique=True, db_field='pn')
+    image = StringField(required=True, default='', db_field='i')
 
     meta = {'collection': 'users'}
 
@@ -24,7 +25,8 @@ class User(BaseDocument):
             "name" : self.name,
             "family" : self.family,
             "username" : self.username,
-            "phone_number" : self.phone_number
+            "phone_number" : self.phone_number,
+            "image" : self.image
         }
 
     def populate(self,json):
@@ -32,6 +34,7 @@ class User(BaseDocument):
         self.family = json['family']
         if 'username' in json:
             self.username = json['username']
+        self.image = json['image']
 
     def check_password(self, password): #TODO
         return password == self.password

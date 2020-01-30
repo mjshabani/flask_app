@@ -6,8 +6,8 @@ from .user import User
 from .consultation_time import ConsultationTime, Status
 
 class Reservation(BaseDocument):
-    user = ReferenceField(User, required=True, reverse_delete_rule=CASCADE, db_field='u')
-    consultation_time = ReferenceField(ConsultationTime, required=True, reverse_delete_rule=CASCADE, db_field='ct')
+    user = ReferenceField(User, required=True, reverse_delete_rule=DENY, db_field='u')
+    consultation_time = ReferenceField(ConsultationTime, required=True, reverse_delete_rule=DENY, db_field='ct')
 
     meta = {'collection': 'reservations'}
 

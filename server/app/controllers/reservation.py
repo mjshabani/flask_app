@@ -3,11 +3,13 @@ from mongoengine import DoesNotExist
 
 from app.models.user import User, authenticate
 from app.models.consultant import Consultant
+from app.models.consultation_time import ConsultationTime
 from app.models.admin import Admin
 from app.models.reservation import Reservation
 
 from app.jsons import validate
 from app.utils.uid import uid
+from app.utils.pagination import paginate
 from app.utils.user_type import UserType
 
 api = Blueprint('api.reservation', __name__, url_prefix='/api/reservation')
@@ -48,3 +50,24 @@ def delete(reservation_id):
 
     reservation.delete()
     return jsonify(), 200
+
+
+@api.route('', methods=['GET'])
+@paginate
+def get_list():
+    args = request.args
+    list = Reservation.objects
+
+    consultant_id = args.get('consultant', None)
+    user_id = args.get('user', None)
+
+    if user_id:
+        user = User.objects.get_or_404(id=user_id)
+        list = list.filter(user=user)
+
+    if consultant_id:
+        consultant = Consultant.objects.get_or_404(id=consultant_id)
+        consultation_times = ConsultationTime.objects.filter(consultant=consultant).all()
+        list = list.filter(consultant_time__in=consultation_times)
+
+    return list

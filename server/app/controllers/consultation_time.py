@@ -14,7 +14,7 @@ from app.utils.user_type import UserType
 
 api = Blueprint('api.consultation_time', __name__, url_prefix='/api/consultation_time')
 
-@api.route('/create', methods=['POST'])
+@api.route('', methods=['POST'])
 @validate('create_consultation_time')
 @authenticate
 def create():
